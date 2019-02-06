@@ -27,18 +27,19 @@ input [63:0] in;
 
 output reg out=0;
 
-reg [2:0] ps,ns;
+reg [3:0] ps,ns;
 reg [31:0]p;
 reg [15:0]q;
-reg [15:0]s;
+reg [15:0]s=0;
+reg k=0;
 
-parameter A=3'b000,B=3'b001,C=3'b010,D=3'b011,E=3'b100,F=3'b101,G=3'b110,H=3'b111;
+parameter A=4'b0000,B=4'b0001,C=4'b0010,D=4'b0011,E=4'b0100,F=4'b0101,G=4'b0110,H=4'b0111,I=4'b1000;
 
 always@(posedge clk or posedge rst)
  begin
  
   if(rst)
-   ps<=A;
+   ps<=I;
    
   
   else
@@ -47,16 +48,26 @@ always@(posedge clk or posedge rst)
  end  
  
  
+ 
  always@(ps)
   begin
    
     case(ps)
     
-     A: begin
+     I:
+        begin
+         
+         ns=A;
+         s=0;
+         k=0;
+         
+        end 
+             
+     A:
+          begin
          
           p=in[31:0] ;
           ns=B;
-          s=0;
           
         end   
         
@@ -103,6 +114,8 @@ always@(posedge clk or posedge rst)
               end
               
      H: begin
+     
+             k=1;
         
              if(q==s)
               
@@ -111,7 +124,10 @@ always@(posedge clk or posedge rst)
               else
                
                out=0;
-         end
+               
+           
+               
+         end 
          
      endcase
      
@@ -119,20 +135,23 @@ always@(posedge clk or posedge rst)
     
     end
     
+    always@(in)
+  
+     begin
+     
+      if(k==1)
+       ps<=I;
+       out=0;
+    
+     end  
+      
+    
 
  
     
 
 
- always@(in)
- 
- begin
-  
-   ns=A;
-   p=0;
-   q=0;
-   out=0;
-end
+
 
 
 
